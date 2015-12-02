@@ -1,4 +1,4 @@
-package pl.kacper.tornado;
+package pl.kacper.tornado.renderer;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
@@ -20,6 +20,14 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     Triangle triangle;     // ( NEW )
     Circle circle;
     Square square;
+
+    //Let's add rotation
+    private float angleTriangle = 0.0f;
+    private float angleCircle = 0.0f;
+    private float angleSquare = 0.0f;
+    private float speedTriangle = 0.5f;
+    private float speedCircle = -0.4f;
+    private float speedSquare = 0.2f;
 
     public MyGLRenderer(Context context) {
         this.context = context;
@@ -58,12 +66,22 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         gl.glLoadIdentity();                 // Reset model-view matrix ( NEW )
         gl.glTranslatef(-1.5f, 0.0f, -6.0f); // Translate left and into the screen ( NEW )
         //gl.glScalef(1.0f, 2.0f, -1.0f);
+        gl.glRotatef(angleTriangle, 0.0f, 1.0f, 0.0f);
         triangle.draw(gl);                   // Draw triangle ( NE
 
-        gl.glTranslatef(3.0f, 0.0f, 0.0f);
+        gl.glLoadIdentity();
+        gl.glTranslatef(1.5f, 0.0f, -6.0f);
+        gl.glRotatef(angleCircle, 0.0f, 1.0f, 0.0f);//Rotation around y
         circle.draw(gl);
 
-        gl.glTranslatef(3.0f, 0.0f, 0.0f);
+        gl.glLoadIdentity();
+        gl.glTranslatef(3.0f, 0.0f, -6.0f);
+        gl.glRotatef(angleSquare, 1.0f, 0.0f, 0.0f); //Rotation around x
         square.draw(gl);
+
+        angleCircle += speedCircle;
+        angleSquare += speedSquare;
+        angleTriangle += speedTriangle;
+
     }
 }

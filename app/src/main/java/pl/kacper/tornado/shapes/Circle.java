@@ -20,7 +20,7 @@ public class Circle {
     float center_z = 0.0f;
 
     // Create a buffer for vertex data
-    float buffer[] = new float[vertexCount*3]; // (x,y) for each vertex
+    float buffer[] = new float[vertexCount*3]; // (x,y,z) for each vertex
     int idx = 0;
     int outerVertexCount = vertexCount - 1;
 
@@ -61,7 +61,7 @@ public class Circle {
         //just the circle
         gl.glColor4f(1.0f, 0.2f, 0.2f, 1.0f); //!Remember this sets only the current color!!!
 
-        gl.glDrawArrays(GL10.GL_TRIANGLE_FAN, 1, vertexCount);
+        gl.glDrawArrays(GL10.GL_TRIANGLE_FAN, 0, vertexCount);
         //filled circle
         gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
     }
