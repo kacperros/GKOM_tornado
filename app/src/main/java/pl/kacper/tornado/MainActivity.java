@@ -8,6 +8,7 @@ import pl.kacper.tornado.renderer.LeafRenderer;
 import pl.kacper.tornado.renderer.My3dRenderer;
 import pl.kacper.tornado.renderer.My3dRenderer2;
 import pl.kacper.tornado.renderer.MyGLRenderer;
+import pl.kacper.tornado.renderer.TornadoRenderer;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -19,8 +20,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         glSurfaceView = (GLSurfaceView) findViewById(R.id.gl_view);
         //glSurfaceView.setRenderer(new My3dRenderer(this));
-        glSurfaceView.setRenderer(new LeafRenderer(this));
+        //glSurfaceView.setRenderer(new LeafRenderer(this));
         //glSurfaceView.setRenderer(new MyGLRenderer(this));
+        glSurfaceView.setRenderer(new TornadoRenderer(this));
     }
 
     @Override

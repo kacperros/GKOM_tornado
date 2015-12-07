@@ -23,29 +23,22 @@ public class PrimitiveLeaf {
     private int outerVertexCount = vertexCount - 1;
     int idx = 0;
     private float sideVertices[] = new float[facesNumber * 4 * 3];
-    /*private float leafVertices[] = {
-            3.0f, 0.0f, 4.0f,
-            0.0f, 0.0f, 6.0f,
-            -3.0f, 0.0f, 4.0f,
-            0.0f, 0.0f, 2.0f
-    };*/
     private float leafVertices[] = {
-            0.0f, 0.0f, 2.0f,
-            3.0f, 0.0f, 4.0f,
+            0.0f, 0.0f, 1.0f,
+            1.0f, 0.0f, 2.0f,
             0.0f, 0.0f, 6.0f,
-            -3.0f, 0.0f, 4.0f,
-            0.0f, 0.0f, 2.0f,
-
+            -1.0f, 0.0f, 2.0f,
+            0.0f, 0.0f, 1.0f,
     };
 
     private float height = 5.0f;
-    private float radius = 0.01f;
+    private float radius = 0.05f;
     private float[] color;
 
     public PrimitiveLeaf(float[] color) {
         this.color = color;
 
-        //draw the stalk of the leaf
+        //draw the stalk of the leaf vertices
         for(int i = 0; i < 2; i++ ) {
             vertices[idx++] = centerX;
             vertices[idx++] = centerY;
@@ -79,10 +72,7 @@ public class PrimitiveLeaf {
             isx-=3;
             ++k;
         }
-        //Stalk done
-        //Leaf time
-
-
+        //Stalk vertices done
 
         ByteBuffer vbb = ByteBuffer.allocateDirect(vertices.length * 4);
         vbb.order(ByteOrder.nativeOrder()); // Use native byte order
@@ -103,15 +93,15 @@ public class PrimitiveLeaf {
     }
 
     public void draw(GL10 gl){
-
         gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
         gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
-        gl.glColor4f(color[0], color[1], color[2], color[3]);
+        gl.glColor4f(color[0]*0.5f, color[1]*0.5f, color[2]*0.5f, color[3]*0.5f);
         gl.glDrawArrays(GL10.GL_TRIANGLE_FAN, 0, vertices.length / 6);
         gl.glDrawArrays(GL10.GL_TRIANGLE_FAN, vertices.length / 6, vertices.length / 6);
         gl.glVertexPointer(3, GL10.GL_FLOAT, 0, outerVertexBuffer);
         gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, sideVertices.length / 3);
         gl.glVertexPointer(3, GL10.GL_FLOAT, 0, leafVertexBuffer);
+        gl.glColor4f(color[0], color[1], color[2], color[3]);
         gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, leafVertices.length /3);
         gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
     }
