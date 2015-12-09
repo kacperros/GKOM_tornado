@@ -51,12 +51,21 @@ public class TornadoRenderer implements GLSurfaceView.Renderer{
     };
     private float angleTornado = 0.0f;
     private float speedTornado = 1.5f;
-    private float tornadoBaseRadius = 0.3f;
-    private float tornadoTopRadius = 1.0f;
-    private float tornadoHeight = 2.0f;
+    private float tornadoBaseRadius = 0.6f;
+    private float tornadoTopRadius = 2.0f;
+    private float tornadoHeight = 6.0f;
     private float tornadoBase = 0.0f;
-    private int numberOfLeaves = 100;
+    private int numberOfLeaves = 200;
     private int textureIDs[] = new int[5];
+
+    private float flatAngle = 0.0f;
+    private float height = -5.0f;
+    private float z = 5.0f;
+    private final float maxZ = 10.0f;
+    private final float minZ = 1.0f;
+    private final float minHeight = -7.0f;
+    private final float maxHeight = 0.0f;
+    private final float maxAngle = 360.0f;
 
 
     private Random random = new Random();
@@ -100,6 +109,10 @@ public class TornadoRenderer implements GLSurfaceView.Renderer{
         return random.nextFloat()*0.3f-0.15f;
     }
 
+    private float[] lightAmbient = {0.5f, 0.5f, 0.5f, 1.0f};
+    private float[] lightDiffuse = {0.5f, 0.5f, 0.5f, 1.0f};
+    private float[] lightPosition = {5.0f, 5.0f, 5.0f, 1.0f};
+
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -112,8 +125,13 @@ public class TornadoRenderer implements GLSurfaceView.Renderer{
 
         loadTextures(gl);
         gl.glEnable(GL10.GL_TEXTURE_2D);
-
-
+//
+//        gl.glLightfv(GL10.GL_LIGHT1, GL10.GL_AMBIENT, lightAmbient, 0);
+//        gl.glLightfv(GL10.GL_LIGHT1, GL10.GL_DIFFUSE, lightDiffuse, 0);
+//        gl.glLightfv(GL10.GL_LIGHT1, GL10.GL_POSITION, lightPosition, 0);
+//        gl.glEnable(GL10.GL_LIGHT1);   // Enable Light 1
+//        gl.glEnable(GL10.GL_LIGHT0);   // Enable the default Light 0
+//        gl.glEnable(GL10.GL_COLOR_MATERIAL);
     }
 
     private void loadTextures(GL10 gl) {
@@ -192,8 +210,14 @@ public class TornadoRenderer implements GLSurfaceView.Renderer{
     public void onDrawFrame(GL10 gl) {
         gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
         gl.glMatrixMode(GL10.GL_MODELVIEW);
+        //gl.glEnable(GL10.GL_LIGHTING);
         gl.glLoadIdentity();
-        GLU.gluLookAt(gl, 5, 5, 10, 0.0f, 0.0f, 0.0f, 0f, 1.0f, 0.0f);
+        GLU.gluLookAt(gl, 7, 7, 7, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+        //GLU.gluLookAt(gl, 3, 3, 7, 0.0f, 0.0f, 0.0f, 0f, 1.0f, 0.0f);
+
+        //Transform from inputs
+        gl.glRotatef(flatAngle, 0.0f, 1.0f, 0.0f);
+        gl.glTranslatef(0.0f, height, 0.0f);
         //Scene setup
         gl.glPushMatrix();
             gl.glScalef(12.0f, 1.0f, 12.0f);
@@ -222,14 +246,14 @@ public class TornadoRenderer implements GLSurfaceView.Renderer{
         gl.glPopMatrix();
 
         gl.glPushMatrix();
-        gl.glTranslatef(0.0f,6.0f, 12.0f);
+        gl.glTranslatef(0.0f, 6.0f, 12.0f);
         gl.glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
         gl.glScalef(12.0f, 12.0f, 1.0f);
         sceneWall3.draw(gl, textureIDs[3]);
         gl.glPopMatrix();
 
         gl.glPushMatrix();
-        gl.glTranslatef(-12.0f,6.0f, 0.0f);
+        gl.glTranslatef(-12.0f, 6.0f, 0.0f);
         gl.glRotatef(-90.0f, 0.0f, 1.0f, 0.0f);
         gl.glScalef(12.0f, 12.0f, 1.0f);
         sceneWall4.draw(gl, textureIDs[3]);
@@ -257,16 +281,17 @@ public class TornadoRenderer implements GLSurfaceView.Renderer{
         //Leaf Tornado!!!
         gl.glPushMatrix();
         gl.glTranslatef((float) Math.cos(angleTornado / 50.0f), 0.0f, (float) Math.sin(angleTornado / 50.0f)); //Tornado moves in a circle
-        gl.glRotatef(-angleTornado*3.0f, 0.0f, 1.0f, 0.0f);
+        gl.glRotatef(-angleTornado*3.0f, 0.0f, 1.0f, 0.0f);//Remember to increase the multiplier for hand in
         for(int i = 0; i < numberOfLeaves; i++){
             gl.glPushMatrix();
             gl.glTranslatef((float) Math.sin(leafHeight[i] + angleTornado / 30.0f), 0.0f, 0.0f); //Tornado sinuses
             gl.glRotatef(-leafAngle[i]-angleTornado*leafAngle[i]/360.0f, 0.0f, 1.0f, 0.0f);
             gl.glTranslatef(leafRadius[i], leafHeight[i], 0.0f);
-            gl.glScalef(0.05f, 0.05f, 0.05f);
+            gl.glScalef(0.1f, 0.1f, 0.1f);
             gl.glRotatef(leafRotationAngle[3 * i] + angleTornado*leafRotationRates[3*i], 1.0f, 0.0f, 0.0f);
             gl.glRotatef(leafRotationAngle[3*i + 1] + angleTornado*leafRotationRates[3*i+1] ,0.0f, 1.0f, 0.0f);
             gl.glRotatef(leafRotationAngle[3*i + 2] + angleTornado*leafRotationRates[3*i +2],0.0f, 0.0f,1.0f);
+            gl.glRotatef(leafAngle[i], 0.0f, 0.0f, 1.0f);
             gl.glRotatef(90.0f, 0.0f, 0.0f, 1.0f);
             gl.glTranslatef(0.0f, 0.0f, -3.0f);
             leaves[i].draw(gl);
@@ -281,6 +306,40 @@ public class TornadoRenderer implements GLSurfaceView.Renderer{
     private float[] createRotationRates(){
         float[] ret = { random.nextFloat()*3.0f + 1.0f, random.nextFloat()*3.0f+1.0f, random.nextFloat()*3.0f+1.0f};
         return ret;
+    }
+
+    public float getFlatAngle() {
+        return flatAngle;
+    }
+
+    public float getHeight(){
+        return height;
+    }
+
+    public float getZ() {
+        return z;
+    }
+
+    public void setFlatAngle(float flatAngle) {
+        this.flatAngle = flatAngle%360;
+    }
+
+    public void setHeight(float height){
+        if(height <= maxHeight && height >= minHeight)
+            this.height = height;
+        if(height < minHeight)
+            this.height = minHeight;
+        if(height > maxHeight)
+            this.height = maxHeight;
+    }
+
+    public void setZ(float z) {
+        if(z <= maxZ && z >= minZ)
+            this.z = z;
+        if(z < minZ)
+            this.z = minZ;
+        if(z > maxZ)
+            this.z = maxZ;
     }
 
 }

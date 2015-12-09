@@ -14,15 +14,19 @@ public class MainActivity extends AppCompatActivity {
 
     private GLSurfaceView glSurfaceView;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        glSurfaceView = (GLSurfaceView) findViewById(R.id.gl_view);
-        //glSurfaceView.setRenderer(new My3dRenderer(this));
+//        setContentView(R.layout.activity_main);
+//        glSurfaceView = (GLSurfaceView) findViewById(R.id.gl_view);
+//        glSurfaceView.setRenderer(new TornadoRenderer(this));
+//        //glSurfaceView.setRenderer(new My3dRenderer(this));
         //glSurfaceView.setRenderer(new LeafRenderer(this));
         //glSurfaceView.setRenderer(new MyGLRenderer(this));
-        glSurfaceView.setRenderer(new TornadoRenderer(this));
+        glSurfaceView = new MOpenGLView(this);
+        setContentView(glSurfaceView);
+
     }
 
     @Override

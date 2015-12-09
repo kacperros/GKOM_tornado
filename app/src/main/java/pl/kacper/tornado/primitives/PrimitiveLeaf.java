@@ -93,6 +93,7 @@ public class PrimitiveLeaf {
     }
 
     public void draw(GL10 gl){
+        //setMaterial(gl);
         gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
         gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
         gl.glColor4f(color[0]*0.5f, color[1]*0.5f, color[2]*0.5f, color[3]*0.5f);
@@ -104,5 +105,15 @@ public class PrimitiveLeaf {
         gl.glColor4f(color[0], color[1], color[2], color[3]);
         gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, leafVertices.length /3);
         gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+    }
+
+    private void setMaterial(GL10 gl) {
+        float shininess = 30;
+        float[] ambient = { color[0], color[1], color[2], 1 };
+        float[] diffuse = { color[0], color[1], color[2], 1 };
+
+        gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_DIFFUSE, diffuse, 0);
+        gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_AMBIENT, ambient, 0);
+        gl.glMaterialf(GL10.GL_FRONT_AND_BACK, GL10.GL_SHININESS, shininess);
     }
 }
