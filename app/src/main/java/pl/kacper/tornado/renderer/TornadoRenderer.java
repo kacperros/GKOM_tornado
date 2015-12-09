@@ -16,6 +16,7 @@ import pl.kacper.tornado.R;
 import pl.kacper.tornado.primitives.PrimitiveCube;
 import pl.kacper.tornado.primitives.PrimitiveLeaf;
 import pl.kacper.tornado.primitives.PrimitivePyramid;
+import pl.kacper.tornado.primitives.PrimitiveSurface;
 
 /**
  * Created by kacper on 06.12.15.
@@ -26,6 +27,12 @@ public class TornadoRenderer implements GLSurfaceView.Renderer{
     private PrimitiveLeaf[] leaves;
     private PrimitiveCube cube;
     private PrimitivePyramid pyramid;
+    private PrimitiveSurface sceneFloor = new PrimitiveSurface();
+    private PrimitiveSurface sceneWall1 = new PrimitiveSurface();
+    private PrimitiveSurface sceneWall2 = new PrimitiveSurface();
+    private PrimitiveSurface sceneWall3 = new PrimitiveSurface();
+    private PrimitiveSurface sceneWall4 = new PrimitiveSurface();
+    private PrimitiveSurface sceneCeiling = new PrimitiveSurface();
     private float[] leafHeight;
     private float[] leafRadius;
     private float[] leafAngle;
@@ -49,7 +56,7 @@ public class TornadoRenderer implements GLSurfaceView.Renderer{
     private float tornadoHeight = 2.0f;
     private float tornadoBase = 0.0f;
     private int numberOfLeaves = 100;
-    private int textureIDs[] = new int[4];
+    private int textureIDs[] = new int[5];
 
 
     private Random random = new Random();
@@ -110,7 +117,7 @@ public class TornadoRenderer implements GLSurfaceView.Renderer{
     }
 
     private void loadTextures(GL10 gl) {
-        gl.glGenTextures(4, textureIDs, 0); // Generate texture-ID array
+        gl.glGenTextures(5, textureIDs, 0); // Generate texture-ID array
         gl.glBindTexture(GL10.GL_TEXTURE_2D, textureIDs[0]);   // Bind to texture ID
         // Set up texture filters
         gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_NEAREST);
@@ -127,6 +134,40 @@ public class TornadoRenderer implements GLSurfaceView.Renderer{
         gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
         // Get bitmap
         bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.snow);
+        // Build Texture from loaded bitmap for the currently-bind texture ID
+        GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, bitmap, 0);
+        bitmap.recycle();
+
+        gl.glBindTexture(GL10.GL_TEXTURE_2D, textureIDs[2]);   // Bind to texture ID
+        // Set up texture filters
+        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_NEAREST);
+        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
+
+       // gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, GL10.GL_REPEAT);
+       // gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, GL10.GL_REPEAT);
+
+
+        bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.grass);
+        // Build Texture from loaded bitmap for the currently-bind texture ID
+        GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, bitmap, 0);
+        bitmap.recycle();
+
+        gl.glBindTexture(GL10.GL_TEXTURE_2D, textureIDs[3]);   // Bind to texture ID
+        // Set up texture filters
+        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_NEAREST);
+        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
+        // Get bitmap
+        bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.autumn_wall);
+        // Build Texture from loaded bitmap for the currently-bind texture ID
+        GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, bitmap, 0);
+        bitmap.recycle();
+
+        gl.glBindTexture(GL10.GL_TEXTURE_2D, textureIDs[4]);   // Bind to texture ID
+        // Set up texture filters
+        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_NEAREST);
+        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
+        // Get bitmap
+        bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.sky);
         // Build Texture from loaded bitmap for the currently-bind texture ID
         GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, bitmap, 0);
         bitmap.recycle();
@@ -152,21 +193,65 @@ public class TornadoRenderer implements GLSurfaceView.Renderer{
         gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
         gl.glMatrixMode(GL10.GL_MODELVIEW);
         gl.glLoadIdentity();
-        GLU.gluLookAt(gl, 3, 3, 5, 0.0f, 0.0f, 0.0f, 0f, 1.0f, 0.0f);
+        GLU.gluLookAt(gl, 5, 5, 10, 0.0f, 0.0f, 0.0f, 0f, 1.0f, 0.0f);
+        //Scene setup
+        gl.glPushMatrix();
+            gl.glScalef(12.0f, 1.0f, 12.0f);
+            gl.glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
+            sceneFloor.draw(gl, textureIDs[2]);
+        gl.glPopMatrix();
+
+        gl.glPushMatrix();
+            gl.glTranslatef(0.0f, 12.0f, 0.0f);
+            gl.glScalef(12.0f, 1.0f, 12.0f);
+            gl.glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
+            sceneCeiling.draw(gl, textureIDs[4]);
+        gl.glPopMatrix();
+
+        gl.glPushMatrix();
+            gl.glTranslatef(0.0f, 6.0f, -12.0f);
+            gl.glScalef(12.0f, 12.0f, 1.0f);
+            sceneWall1.draw(gl, textureIDs[3]);
+        gl.glPopMatrix();
+
+        gl.glPushMatrix();
+        gl.glTranslatef(12.0f, 6.0f, 0.0f);
+        gl.glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
+        gl.glScalef(12.0f, 12.0f, 1.0f);
+        sceneWall2.draw(gl, textureIDs[3]);
+        gl.glPopMatrix();
+
+        gl.glPushMatrix();
+        gl.glTranslatef(0.0f,6.0f, 12.0f);
+        gl.glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
+        gl.glScalef(12.0f, 12.0f, 1.0f);
+        sceneWall3.draw(gl, textureIDs[3]);
+        gl.glPopMatrix();
+
+        gl.glPushMatrix();
+        gl.glTranslatef(-12.0f,6.0f, 0.0f);
+        gl.glRotatef(-90.0f, 0.0f, 1.0f, 0.0f);
+        gl.glScalef(12.0f, 12.0f, 1.0f);
+        sceneWall4.draw(gl, textureIDs[3]);
+        gl.glPopMatrix();
+
 
         //The snow covered tower, as pitiful as it may look
         gl.glPushMatrix();
-        gl.glTranslatef(3.0f, 0.0f, -6.0f);
+        gl.glTranslatef(0.0f, 1.0f, 0.0f);
+
+        gl.glPushMatrix();
+        gl.glTranslatef(4.0f, 0.0f, -4.0f);
         gl.glRotatef(45.0f, 0.0f, 1.0f, 0.0f);
         gl.glScalef(0.5f, 0.5f, 0.5f);
             gl.glPushMatrix();
-            gl.glScalef(1.0f, 2.0f, 1.0f);
-            cube.draw(gl, textureIDs[0]);
+        gl.glScalef(1.0f, 2.0f, 1.0f);
+        cube.draw(gl, textureIDs[0]);
             gl.glPopMatrix();
             gl.glPushMatrix();
             gl.glTranslatef(0.0f, 3.0f, 0.0f);
-            pyramid.draw(gl, textureIDs[1]);
-            gl.glPopMatrix();
+        pyramid.draw(gl, textureIDs[1]);
+        gl.glPopMatrix();
         gl.glPopMatrix();
 
         //Leaf Tornado!!!
@@ -188,6 +273,8 @@ public class TornadoRenderer implements GLSurfaceView.Renderer{
             gl.glPopMatrix();
         }
         angleTornado += speedTornado;
+        gl.glPopMatrix();
+
         gl.glPopMatrix();
     }
 

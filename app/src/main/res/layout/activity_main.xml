@@ -10,19 +10,19 @@
         android:layout_height="wrap_content"
         android:id="@+id/seekbar_container"
         android:orientation="vertical">
-        <SeekBar
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/amount_of_leaves_seekbar"/>
-        <SeekBar
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/sun_position_seekbar"/>
-        <SeekBar
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/tornado_force_seekbar"/>
-    </LinearLayout>
+    <!--<SeekBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/amount_of_leaves_seekbar"/>
+    <SeekBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/sun_position_seekbar"/>
+    <SeekBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tornado_force_seekbar"/>-->
+</LinearLayout>
     <android.opengl.GLSurfaceView
         android:id="@+id/gl_view"
         android:layout_below="@id/seekbar_container"
