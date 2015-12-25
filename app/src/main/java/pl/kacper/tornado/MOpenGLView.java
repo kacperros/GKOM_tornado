@@ -3,6 +3,7 @@ package pl.kacper.tornado;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 
 import pl.kacper.tornado.renderer.TornadoRenderer;
 
@@ -12,11 +13,13 @@ import pl.kacper.tornado.renderer.TornadoRenderer;
 public class MOpenGLView extends GLSurfaceView {
 
     private final TornadoRenderer renderer;
+    private ScaleGestureDetector scaleGestureDetector;
 
     public MOpenGLView(Context context) {
         super(context);
         renderer = new TornadoRenderer(context);
         setRenderer(renderer);
+        scaleGestureDetector = new ScaleGestureDetector(context, new ScaleListener());
     }
 
     private final float TOUCH_SCALE_FACTOR = 180.0f / 320;
@@ -25,6 +28,8 @@ public class MOpenGLView extends GLSurfaceView {
 
     @Override
     public boolean onTouchEvent(MotionEvent e) {
+
+        scaleGestureDetector.onTouchEvent(e);
         float x = e.getX();
         float y = e.getY();
 
@@ -51,6 +56,16 @@ public class MOpenGLView extends GLSurfaceView {
         previousX = x;
         previousY = y;
         return true;
+    }
+
+    private class ScaleListener
+            extends ScaleGestureDetector.SimpleOnScaleGestureListener {
+        @Override
+        public boolean onScale(ScaleGestureDetector detector) {
+            renderer.setZ(renderer.getZ()*detector.getScaleFactor());
+            invalidate();
+            return true;
+        }
     }
 
 }

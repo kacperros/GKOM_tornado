@@ -60,8 +60,6 @@ public class PrimitiveCube {
             1.0f, 0.0f   // D. right-top
     };
 
-    int[] textureIDs = new int[1];
-
     public PrimitiveCube() {
         ByteBuffer vbb = ByteBuffer.allocateDirect(vertices.length * 4);
         vbb.order(ByteOrder.nativeOrder());

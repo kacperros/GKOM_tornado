@@ -24,7 +24,7 @@ public class Circle {
     int idx = 0;
     int outerVertexCount = vertexCount - 1;
 
-// Center vertex for triangle fan
+    // Center vertex for triangle fan
     {
         buffer[idx++] = center_x;
         buffer[idx++] = center_y;
@@ -57,12 +57,8 @@ public class Circle {
     public void draw(GL10 gl){
         gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
         gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
-        //gl.glDrawArrays(GL10.GL_LINE_LOOP, 1, outerVertexCount);
-        //just the circle
         gl.glColor4f(1.0f, 0.2f, 0.2f, 1.0f); //!Remember this sets only the current color!!!
-
         gl.glDrawArrays(GL10.GL_TRIANGLE_FAN, 0, vertexCount);
-        //filled circle
         gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
     }
 

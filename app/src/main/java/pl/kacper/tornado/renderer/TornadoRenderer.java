@@ -60,12 +60,15 @@ public class TornadoRenderer implements GLSurfaceView.Renderer{
 
     private float flatAngle = 0.0f;
     private float height = -5.0f;
-    private float z = 5.0f;
-    private final float maxZ = 10.0f;
-    private final float minZ = 1.0f;
-    private final float minHeight = -7.0f;
-    private final float maxHeight = 0.0f;
+    private float scale = 1.0f;
+    private float minScale = 0.1f;
+    private float maxScale = 2.0f;
+    private final float minHeight = -5.0f;
+    private final float maxHeight = 1.0f;
     private final float maxAngle = 360.0f;
+    private float distanceFromCenter = 7.0f;
+    private float maxDistanceFromCenter = 7.0f;
+    private float minDistanceFromCenter = 1.5f;
 
 
     private Random random = new Random();
@@ -141,7 +144,9 @@ public class TornadoRenderer implements GLSurfaceView.Renderer{
         gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_NEAREST);
         gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
         // Get bitmap
-        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.pw_bricks1);
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inScaled = false;
+        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.pw_bricks1, options);
         // Build Texture from loaded bitmap for the currently-bind texture ID
         GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, bitmap, 0);
         bitmap.recycle();
@@ -151,7 +156,7 @@ public class TornadoRenderer implements GLSurfaceView.Renderer{
         gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_NEAREST);
         gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
         // Get bitmap
-        bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.snow);
+        bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.snow, options);
         // Build Texture from loaded bitmap for the currently-bind texture ID
         GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, bitmap, 0);
         bitmap.recycle();
@@ -165,7 +170,7 @@ public class TornadoRenderer implements GLSurfaceView.Renderer{
        // gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, GL10.GL_REPEAT);
 
 
-        bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.grass);
+        bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.grass, options);
         // Build Texture from loaded bitmap for the currently-bind texture ID
         GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, bitmap, 0);
         bitmap.recycle();
@@ -175,7 +180,7 @@ public class TornadoRenderer implements GLSurfaceView.Renderer{
         gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_NEAREST);
         gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
         // Get bitmap
-        bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.autumn_wall);
+        bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.forest1, options);
         // Build Texture from loaded bitmap for the currently-bind texture ID
         GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, bitmap, 0);
         bitmap.recycle();
@@ -185,7 +190,7 @@ public class TornadoRenderer implements GLSurfaceView.Renderer{
         gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_NEAREST);
         gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
         // Get bitmap
-        bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.sky);
+        bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.sky1, options);
         // Build Texture from loaded bitmap for the currently-bind texture ID
         GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, bitmap, 0);
         bitmap.recycle();
@@ -212,7 +217,7 @@ public class TornadoRenderer implements GLSurfaceView.Renderer{
         gl.glMatrixMode(GL10.GL_MODELVIEW);
         //gl.glEnable(GL10.GL_LIGHTING);
         gl.glLoadIdentity();
-        GLU.gluLookAt(gl, 7, 7, 7, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+        GLU.gluLookAt(gl, distanceFromCenter, distanceFromCenter, distanceFromCenter, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f);
         //GLU.gluLookAt(gl, 3, 3, 7, 0.0f, 0.0f, 0.0f, 0f, 1.0f, 0.0f);
 
         //Transform from inputs
@@ -317,7 +322,7 @@ public class TornadoRenderer implements GLSurfaceView.Renderer{
     }
 
     public float getZ() {
-        return z;
+        return scale;
     }
 
     public void setFlatAngle(float flatAngle) {
@@ -334,12 +339,9 @@ public class TornadoRenderer implements GLSurfaceView.Renderer{
     }
 
     public void setZ(float z) {
-        if(z <= maxZ && z >= minZ)
-            this.z = z;
-        if(z < minZ)
-            this.z = minZ;
-        if(z > maxZ)
-            this.z = maxZ;
+        this.scale = Math.max(0.1f, Math.min(z, 5.0f));
+        distanceFromCenter = Math.max(minDistanceFromCenter, Math.min(distanceFromCenter*z, maxDistanceFromCenter));
+
     }
 
 }

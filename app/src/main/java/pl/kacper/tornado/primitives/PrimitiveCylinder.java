@@ -73,14 +73,14 @@ public class PrimitiveCylinder {
 
 
         ByteBuffer vbb = ByteBuffer.allocateDirect(vertices.length * 4);
-        vbb.order(ByteOrder.nativeOrder()); // Use native byte order
-        vertexBuffer = vbb.asFloatBuffer(); // Convert from byte to float
-        vertexBuffer.put(vertices);         // Copy data into buffer
+        vbb.order(ByteOrder.nativeOrder());
+        vertexBuffer = vbb.asFloatBuffer();
+        vertexBuffer.put(vertices);
         vertexBuffer.position(0);
         ByteBuffer vbb2 = ByteBuffer.allocateDirect(sideVertices.length * 4);
-        vbb2.order(ByteOrder.nativeOrder()); // Use native byte order
-        outerVertexBuffer = vbb2.asFloatBuffer(); // Convert from byte to float
-        outerVertexBuffer.put(sideVertices);         // Copy data into buffer
+        vbb2.order(ByteOrder.nativeOrder());
+        outerVertexBuffer = vbb2.asFloatBuffer();
+        outerVertexBuffer.put(sideVertices);
         outerVertexBuffer.position(0);
 
     }
